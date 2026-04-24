@@ -1,0 +1,33 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: llm-gateway-ollama
+    restart: unless-stopped
+    volumes:
+      - ollama_data:/root/.ollama
+    # IMPORTANT:
+    # Ollama is intentionally NOT published to the host or internet.
+    # The API service talks to it through Docker DNS: http://ollama:11434
+
+  api:
+    build:
+      context: ./api
+    container_name: llm-gateway-api
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      - ollama
+    ports:
+      - "127.0.0.1:8000:8000"
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: llm-gateway-cloudflared
+    restart: unless-stopped
+    command: tunnel --url http://api:8000
+    depends_on:
+      - api
+
+volumes:
+  ollama_data:
