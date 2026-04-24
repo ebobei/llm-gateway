@@ -181,4 +181,4 @@ docker compose logs -f cloudflared
 ## Автор
 
 Aleksandr Geints  
-GitHub: https://github.com/llm-gateway
+GitHub: [https://github.com/llm-gateway](https://github.com/ebobei/llm-gateway)
